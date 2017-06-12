@@ -1,3 +1,6 @@
 # holunda
 
+image::holunda.png[]
+
 Holistic examples for the camunda bpm engine
+
