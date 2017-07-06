@@ -1,0 +1,20 @@
+-- noinspection SqlNoDataSourceInspectionForFile
+
+CREATE OR REPLACE VIEW TASK_WITH_ORDER AS
+  SELECT DISTINCT
+    T.ID_             AS TASK_ID,
+    T.REV_            AS VERSION,
+    T.NAME_           AS NAME,
+    T.DESCRIPTION_    AS DESCRIPTION,
+    T.TASK_DEF_KEY_   AS TASK_DEFINITION_KEY,
+    -- the businessKey is our orderId, we can use it to map with a domain model.
+    P.BUSINESS_KEY_   AS ORDER_ID,
+    T.PRIORITY_       AS PRIORITY,
+    T.CREATE_TIME_    AS CREATED_DATE,
+    T.DUE_DATE_       AS DUE_DATE,
+    T.FOLLOW_UP_DATE_ AS FOLLOW_UP_DATE,
+    T.PROC_INST_ID_   AS PROCESS_INSTANCE_ID,
+    T.PROC_DEF_ID_    AS PROCESS_DEFINITION_ID,
+    T.ASSIGNEE_       AS ASSIGNEE
+  FROM ACT_RU_TASK T
+    LEFT OUTER JOIN ACT_RU_EXECUTION P ON P.ID_ = T.PROC_INST_ID_;

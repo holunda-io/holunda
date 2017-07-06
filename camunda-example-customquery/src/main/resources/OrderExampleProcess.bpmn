@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.8.2">
+  <bpmn:process id="order_example_process" name="Order Example Process" isExecutable="true" camunda:versionTag="1">
+    <bpmn:documentation>Collect items from store and pack parcel</bpmn:documentation>
+    <bpmn:startEvent id="StartEvent_1" name="Order received">
+      <bpmn:extensionElements>
+        <camunda:formData businessKey="orderId">
+          <camunda:formField id="orderName" label="Order Name" type="string" />
+          <camunda:formField id="orderPositions" label="Book Ids (csv)" type="string" />
+          <camunda:formField id="orderId" label="Order Id" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>SequenceFlow_0pukns8</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0pukns8" sourceRef="StartEvent_1" targetRef="Task_0jw6j3z" />
+    <bpmn:userTask id="task_pack_order" name="Pack Order">
+      <bpmn:incoming>SequenceFlow_0rch5dg</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_09bpuex</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="EndEvent_1upj1jq" name="Shipment sent">
+      <bpmn:incoming>SequenceFlow_09bpuex</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_09bpuex" sourceRef="task_pack_order" targetRef="EndEvent_1upj1jq" />
+    <bpmn:sequenceFlow id="SequenceFlow_0rch5dg" sourceRef="Task_0jw6j3z" targetRef="task_pack_order" />
+    <bpmn:serviceTask id="Task_0jw6j3z" name="Create Order" camunda:delegateExpression="#{createOrderDelegate}">
+      <bpmn:incoming>SequenceFlow_0pukns8</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0rch5dg</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:textAnnotation id="TextAnnotation_08st51w">    <bpmn:text>Stores Order in DB</bpmn:text>
+</bpmn:textAnnotation>
+    <bpmn:association id="Association_0vwq1q4" sourceRef="Task_0jw6j3z" targetRef="TextAnnotation_08st51w" />
+    <bpmn:textAnnotation id="TextAnnotation_07brlul">    <bpmn:text>Package and send items</bpmn:text>
+</bpmn:textAnnotation>
+    <bpmn:association id="Association_1ryuofk" sourceRef="task_pack_order" targetRef="TextAnnotation_07brlul" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="order_example_process">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="173" y="190" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="155" y="226" width="73" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0pukns8_di" bpmnElement="SequenceFlow_0pukns8">
+        <di:waypoint xsi:type="dc:Point" x="209" y="208" />
+        <di:waypoint xsi:type="dc:Point" x="276" y="208" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="242.5" y="186.5" width="0" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_1r1q2w5_di" bpmnElement="task_pack_order">
+        <dc:Bounds x="489" y="168" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1upj1jq_di" bpmnElement="EndEvent_1upj1jq">
+        <dc:Bounds x="668" y="190" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="651" y="229" width="71" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_09bpuex_di" bpmnElement="SequenceFlow_09bpuex">
+        <di:waypoint xsi:type="dc:Point" x="589" y="208" />
+        <di:waypoint xsi:type="dc:Point" x="668" y="208" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="628.5" y="186.5" width="0" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0rch5dg_di" bpmnElement="SequenceFlow_0rch5dg">
+        <di:waypoint xsi:type="dc:Point" x="376" y="208" />
+        <di:waypoint xsi:type="dc:Point" x="489" y="208" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="432.5" y="186.5" width="0" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_02dpa6o_di" bpmnElement="Task_0jw6j3z">
+        <dc:Bounds x="276" y="168" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_08st51w_di" bpmnElement="TextAnnotation_08st51w">
+        <dc:Bounds x="251" y="289" width="149" height="30" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0vwq1q4_di" bpmnElement="Association_0vwq1q4">
+        <di:waypoint xsi:type="dc:Point" x="326" y="248" />
+        <di:waypoint xsi:type="dc:Point" x="326" y="289" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_07brlul_di" bpmnElement="TextAnnotation_07brlul">
+        <dc:Bounds x="443" y="289" width="192" height="30" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1ryuofk_di" bpmnElement="Association_1ryuofk">
+        <di:waypoint xsi:type="dc:Point" x="539" y="248" />
+        <di:waypoint xsi:type="dc:Point" x="539" y="289" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

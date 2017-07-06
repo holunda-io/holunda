@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: orderexamle
+  jpa:
+    generate-ddl: false
+    hibernate.ddl-auto: validate
+  h2:
+    console:
+      enabled: true
+      path: "/h2"
+
+camunda:
+  bpm:
+    database:
+      schema-update: false
+    admin-user:
+      id: admin
+    filter:
+      create: All
+
