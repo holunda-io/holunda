@@ -7,3 +7,16 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
+
+.DS_Store
+
+# IDEs
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+
+# enterprise projects must not go on github!
+enterprise/
+camunda-license.txt
