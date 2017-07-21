@@ -27,4 +27,4 @@ gradlew.bat
 .gradle
 build
 out
-gradle
+/camunda-bpm-spring-boot-example-gradle/gradle/
