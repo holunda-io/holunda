@@ -20,3 +20,11 @@ buildNumber.properties
 # enterprise projects must not go on github!
 enterprise/
 camunda-license.txt
+
+# gradle
+gradlew
+gradlew.bat
+.gradle
+build
+out
+gradle
