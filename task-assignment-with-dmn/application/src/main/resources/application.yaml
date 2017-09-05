@@ -1,0 +1,7 @@
+camunda:
+  bpm:
+    id-generator: strong
+    admin-user:
+      id: admin
+    filter:
+      create: All
