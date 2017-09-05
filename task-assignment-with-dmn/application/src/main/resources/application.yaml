@@ -1,6 +1,19 @@
+
+spring:
+  profiles:
+    active: default
+  application:
+    name: holunda
+  jpa:
+    generate-ddl: false
+    hibernate.ddl-auto: validate
+
+# Camunda
 camunda:
   bpm:
-    id-generator: strong
+    database:
+      schema-update: false
+    id-generator: prefixed
     admin-user:
       id: admin
     filter:
