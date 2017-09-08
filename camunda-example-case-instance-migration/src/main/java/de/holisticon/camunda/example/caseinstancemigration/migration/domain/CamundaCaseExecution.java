@@ -25,36 +25,9 @@ public class CamundaCaseExecution {
     @Column(name = "CASE_INST_ID_")
     private String caseInstanceId;
 
-    @Column(name = "SUPER_CASE_EXEC_")
-    private String superCaseExecutionId;
-
-    @Column(name = "SUPER_EXEC_")
-    private String superExecutionId;
-
-    @Column(name = "BUSINESS_KEY_")
-    private String businessKey;
-
-    @Column(name = "PARENT_ID_")
-    private String parentId;
-
     @Setter
     @Column(name = "CASE_DEF_ID_")
     private String caseDefinitionId;
-
-    @Column(name = "ACT_ID_")
-    private String activityId;
-
-    @Column(name = "PREV_STATE_")
-    private Integer previousState;
-
-    @Column(name = "CURRENT_STATE_")
-    private Integer currentState;
-
-    @Column(name = "REQUIRED_")
-    private Boolean required;
-
-    @Column(name = "TENANT_ID_")
-    private String tenantId;
 
     private CamundaCaseExecution(){} //NOSONAR
 }
