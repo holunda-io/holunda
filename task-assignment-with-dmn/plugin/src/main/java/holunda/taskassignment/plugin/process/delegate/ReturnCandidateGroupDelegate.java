@@ -1,6 +1,6 @@
 package holunda.taskassignment.plugin.process.delegate;
 
-import holunda.taskassignment.plugin.api.CandidateGroup;
+import holunda.taskassignment.api.model.CandidateGroup;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.extension.reactor.bus.CamundaEventBus;
@@ -20,10 +20,10 @@ public class ReturnCandidateGroupDelegate implements JavaDelegate{
   }
 
   @Override
-  public void execute(DelegateExecution execution) throws Exception {
-    String candidateGroup = CANDIDATE_GROUP.getValue(execution);
-    String topic = TOPIC.getValue(execution);
+  public void execute(final DelegateExecution execution) throws Exception {
+    final CandidateGroup candidateGroup = new CandidateGroup(CANDIDATE_GROUP.getValue(execution));
+    final String topic = TOPIC.getValue(execution);
 
-    camundaEventBus.get().notify(topic, Event.wrap(CandidateGroup.of(candidateGroup)));
+    camundaEventBus.get().notify(topic, Event.wrap(candidateGroup));
   }
 }

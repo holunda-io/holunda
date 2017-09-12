@@ -24,6 +24,11 @@
       <artifactId>task-assignment-with-dmn-plugin</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>holunda.talk.bpmcon2017</groupId>
+      <artifactId>task-assignment-with-dmn-api</artifactId>
+    </dependency>
+
     <!-- DATASOURCE -->
     <dependency>
       <groupId>org.springframework.boot</groupId>

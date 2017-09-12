@@ -1,6 +1,9 @@
 package holunda.taskassignment.plugin.api;
 
 import org.camunda.bpm.engine.delegate.VariableScope;
+import org.camunda.bpm.engine.variable.VariableMap;
+
+import java.util.Map;
 
 public interface Variable<T> {
 
@@ -16,5 +19,9 @@ public interface Variable<T> {
 
   default void setValue(VariableScope scope, T value) {
     scope.setVariable(name(), value);
+  }
+
+  default T getValue(final Map<String,Object> variables) {
+    return (T) variables.get(name());
   }
 }
