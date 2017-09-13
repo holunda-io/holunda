@@ -1,6 +1,7 @@
 package holunda.taskassignment.plugin.api;
 
 import holunda.taskassignment.api.model.BusinessKey;
+import holunda.taskassignment.api.model.Variable;
 import holunda.taskassignment.plugin.process.TaskAssignmentProcess;
 import holunda.taskassignment.plugin.process.TaskAssignmentProcess.VARIABLES;
 import lombok.Builder;
@@ -28,6 +29,7 @@ public class TaskAssignmentCommand implements Serializable {
       .taskId(task.getId())
       .taskDefinitionKey(task.getTaskDefinitionKey())
       .businessKey(new BusinessKey(task.getExecution().getProcessBusinessKey()))
+      .type(Variable.TYPE.getValue(task))
       .uuid(UUID.randomUUID())
       .build();
   }
@@ -36,6 +38,7 @@ public class TaskAssignmentCommand implements Serializable {
   private UUID uuid;
   private BusinessKey businessKey;
   private String taskDefinitionKey;
+  private String type;
 
   public String getTopic() {
     return createTopic(taskId, uuid);
@@ -45,6 +48,7 @@ public class TaskAssignmentCommand implements Serializable {
     return Variables
       .putValue(VARIABLES.BUSINESS_KEY.name(), businessKey.getValue())
       .putValue(VARIABLES.TASK_DEFINITION_KEY.name(), taskDefinitionKey)
-      .putValue(VARIABLES.TOPIC.name(), getTopic());
+      .putValue(VARIABLES.TOPIC.name(), getTopic())
+      .putValue(Variable.TYPE.name(), getType());
   }
 }

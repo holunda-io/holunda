@@ -6,5 +6,5 @@ import holunda.taskassignment.api.model.BusinessKey;
 import java.util.Set;
 
 public interface BusinessDataService {
-  BusinessData loadBusinessData(BusinessKey businessKey, Set<String> keys);
+  BusinessData loadBusinessData(final BusinessKey businessKey, final Set<String> keys);
 }

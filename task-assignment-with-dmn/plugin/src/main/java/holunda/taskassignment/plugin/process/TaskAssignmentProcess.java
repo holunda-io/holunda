@@ -2,31 +2,25 @@ package holunda.taskassignment.plugin.process;
 
 import holunda.taskassignment.api.model.CandidateGroup;
 import holunda.taskassignment.plugin.api.TaskAssignmentCommand;
-import holunda.taskassignment.plugin.api.Variable;
-import io.vavr.control.Option;
+import holunda.taskassignment.api.model.Variable;
+import holunda.taskassignment.plugin.process.consumer.CandidateGroupConsumerFactory;
 import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
-import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.reactor.bus.CamundaEventBus;
 import org.camunda.bpm.extension.reactor.bus.SelectorBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import reactor.bus.Event;
-import reactor.fn.Consumer;
 
 import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static org.camunda.bpm.engine.delegate.TaskListener.EVENTNAME_CREATE;
 import static reactor.bus.selector.Selectors.$;
 
 /**
  * Class resembling the assignment process. Registers on {@link CamundaEventBus} and is called
- * everytime a task gets created.
+ * every time a task gets created.
  */
 @Component
 @Slf4j
@@ -64,54 +58,21 @@ public class TaskAssignmentProcess implements Function<TaskAssignmentCommand, Ca
    */
   public static final CandidateGroup FALLBACK_GROUP = new CandidateGroup("dispatcher");
 
-  /**
-   * Selector for "task#create".
-   */
-  public static final SelectorBuilder ON_TASK_CREATE = SelectorBuilder.selector()
-    .bpmn()
-    .task()
-    .event(EVENTNAME_CREATE);
+  private final CandidateGroupConsumerFactory consumerFactory;
 
-  /**
-   * Consumer that listens to candidateGroupEvent fired at process end to synchronously report the task
-   * assignment result back to the caller.
-   */
-  class CandidateGroupConsumer implements Consumer<Event<CandidateGroup>>, Supplier<CandidateGroup> {
-
-    private final AtomicReference<CandidateGroup> candidateGroup = new AtomicReference<>();
-
-    public CandidateGroupConsumer(final TaskAssignmentCommand command) {
-      log.debug("subscribing to '{}'", command.getTopic());
-
-      camundaEventBus.get()
-        .on($(command.getTopic()), this)
-        .cancelAfterUse();
-
-      runtimeService.startProcessInstanceByKey(
-        PROCESS.KEY,
-        command.getTaskId(),
-        command.toMap());
-    }
-
-    @Override
-    public void accept(final Event<CandidateGroup> event) {
-      candidateGroup.set(event.getData());
-    }
-
-    @Override
-    public CandidateGroup get() {
-      return Objects.requireNonNull(candidateGroup.get(), "candidateGroup not initialized!");
-    }
+  public TaskAssignmentProcess(CandidateGroupConsumerFactory consumerFactory) {
+    this.consumerFactory = consumerFactory;
   }
 
-  private final CamundaEventBus camundaEventBus;
-  private final RuntimeService runtimeService;
-
-  public TaskAssignmentProcess(final CamundaEventBus camundaEventBus, final RuntimeService runtimeService) {
-    this.camundaEventBus = camundaEventBus;
-    this.runtimeService = runtimeService;
-
-    camundaEventBus.register(ON_TASK_CREATE,
+  /**
+   * Registers the {@link #apply(TaskAssignmentCommand)} method to run on each
+   * task creation.
+   *
+   * @param camundaEventBus the camundaEventBus to register on
+   */
+  @Autowired
+  void registerOnTaskCreate(CamundaEventBus camundaEventBus) {
+    camundaEventBus.register(SelectorBuilder.selector().bpmn().task().event(EVENTNAME_CREATE),
       (TaskListener) delegateTask -> {
         final TaskAssignmentCommand command = TaskAssignmentCommand.from(delegateTask);
         CandidateGroup candidateGroup = this.apply(command);
@@ -121,8 +82,7 @@ public class TaskAssignmentProcess implements Function<TaskAssignmentCommand, Ca
 
   @Override
   public CandidateGroup apply(final TaskAssignmentCommand command) {
-
-    return Try.ofSupplier(new CandidateGroupConsumer(command))
+    return Try.ofSupplier(consumerFactory.create(command))
       .filter(CandidateGroup::isNotEmpty)
       .getOrElse(FALLBACK_GROUP);
   }

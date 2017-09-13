@@ -3,6 +3,7 @@ package holunda.taskassignment.plugin.process.delegate;
 import holunda.taskassignment.api.model.BusinessData;
 import holunda.taskassignment.api.model.CandidateGroup;
 import holunda.taskassignment.plugin.context.RequireNewTransaction;
+import holunda.taskassignment.plugin.dmn.EvaluateDecisionTable;
 import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.dmn.engine.DmnDecisionRuleResult;
@@ -24,10 +25,14 @@ public class EvaluateDmnDelegate implements JavaDelegate {
 
   private final DecisionService decisionService;
   private final RequireNewTransaction transactionWrapper;
+  private final EvaluateDecisionTable evaluateDecisionTable;
 
-  public EvaluateDmnDelegate(DecisionService decisionService, RequireNewTransaction transactionWrapper) {
+  public EvaluateDmnDelegate(DecisionService decisionService,
+                             RequireNewTransaction transactionWrapper,
+                             EvaluateDecisionTable evaluateDecisionTable) {
     this.decisionService = decisionService;
     this.transactionWrapper = transactionWrapper;
+    this.evaluateDecisionTable = evaluateDecisionTable;
   }
 
   @Override
@@ -35,17 +40,13 @@ public class EvaluateDmnDelegate implements JavaDelegate {
     final String decisionTable = DMN_TABLE.getValue(execution);
     final BusinessData businessData = new BusinessData(BUSINESS_DATA.getValue(execution));
 
-    // this does the actual work
-    final Supplier<CandidateGroup> evaluate = () ->
-      Optional
-        .ofNullable(decisionService.evaluateDecisionTableByKey(decisionTable, businessData.toVariables()).getSingleResult())
-        .map(DmnDecisionRuleResult::getEntryMap)
-        .map(CANDIDATE_GROUP::getValue)
-        .map(CandidateGroup::new)
-        .orElseGet(CandidateGroup::empty);
+    log.info("\n-----\n" +
+      "evaluateDmn\n\n" +
+      "table: {}\n" +
+      "data: {}\n" +
+      "-----\n", decisionTable, businessData.toVariables());
 
-
-    final CandidateGroup candidateGroup = Try.of(() -> transactionWrapper.requireNewTransaction(evaluate).get())
+    final CandidateGroup candidateGroup = Try.of(() -> transactionWrapper.requireNewTransaction(evaluateDecisionTable).apply(decisionTable, businessData))
       .onFailure(e -> log.warn("could not evaluate candidateGroup, {}", e.getMessage()))
       .getOrElse(CandidateGroup.empty());
 

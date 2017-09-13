@@ -7,6 +7,11 @@ import org.springframework.transaction.interceptor.TransactionProxyFactoryBean;
 
 import java.util.Properties;
 
+/**
+ * Wraps target call with new transaction.
+ * Required for "straight through" processes, otherwise transaction is rolled back even
+ * when the exception is caught.
+ */
 @Component
 public class RequireNewTransaction {
 

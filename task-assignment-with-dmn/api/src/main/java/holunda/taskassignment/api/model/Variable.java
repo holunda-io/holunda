@@ -1,11 +1,21 @@
-package holunda.taskassignment.plugin.api;
+package holunda.taskassignment.api.model;
 
 import org.camunda.bpm.engine.delegate.VariableScope;
-import org.camunda.bpm.engine.variable.VariableMap;
+import sun.awt.SunHints;
 
 import java.util.Map;
 
+/**
+ * Abstraction for read/write access to typed process variables.
+ *
+ * @param <T> type of the variable
+ */
 public interface Variable<T> {
+
+  /**
+   * Global variable type that has to be set.
+   */
+  Variable<String> TYPE = Variable.of("type");
 
   static <T> Variable<T> of(String name) {
     return () -> name;

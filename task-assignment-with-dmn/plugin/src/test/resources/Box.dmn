@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="definitions_1n856hf" name="definitions" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="Box" name="Box">
+    <decisionTable id="decisionTable" hitPolicy="FIRST">
+      <input id="input1" label="in" camunda:inputVariable="">
+        <inputExpression id="inputExpression1" typeRef="integer">        <text>in</text>
+</inputExpression>
+      </input>
+      <output id="output1" label="candidateGroup" name="candiateGroup" typeRef="string" />
+      <rule id="row-469476339-1">
+        <inputEntry id="UnaryTests_1tnqrq9">        <text>3</text>
+</inputEntry>
+        <outputEntry id="LiteralExpression_0o2yona">        <text><![CDATA["foo"]]></text>
+</outputEntry>
+      </rule>
+      <rule id="row-469476339-2">
+        <inputEntry id="UnaryTests_1m15nvv">        <text></text>
+</inputEntry>
+        <outputEntry id="LiteralExpression_0iscnmq">        <text><![CDATA["bar"]]></text>
+</outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

@@ -18,7 +18,7 @@ public class BusinessDataTest {
 
     final BusinessData data = new BusinessData(businessData);
 
-    VariableMap variables = data.toVariables();
+    Map<String, Object> variables = data.toVariables();
 
     assertThat(variables.get("foo")).isEqualTo(1);
     assertThat(variables.get("bar")).isNull();
