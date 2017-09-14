@@ -39,7 +39,5 @@ public class CamundaApplication implements CommandLineRunner {
 
     log.info("gold: {}", businessDataService.loadBusinessData(new BusinessKey("gold"), Collections.singleton("weight")));
     log.info("gold: {}", businessDataService.loadBusinessData(new BusinessKey("gold"), Collections.singleton("length")));
-
-    runtimeService.startProcessInstanceByKey("UserTaskProcess", "gold");
   }
 }

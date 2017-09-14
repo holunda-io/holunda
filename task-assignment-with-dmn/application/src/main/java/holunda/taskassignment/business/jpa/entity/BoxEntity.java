@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Entity
-@DiscriminatorValue("box")
+@DiscriminatorValue(PackageEntity.Type.BOX)
 @Getter
 @Setter
 @ToString(callSuper = true)
@@ -30,5 +30,10 @@ public class BoxEntity extends PackageEntity {
     map.put("width", width);
 
     return map;
+  }
+
+  @Override
+  public int getVolume() {
+    return width * height * length;
   }
 }

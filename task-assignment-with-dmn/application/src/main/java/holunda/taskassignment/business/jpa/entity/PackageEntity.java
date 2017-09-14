@@ -1,18 +1,13 @@
 package holunda.taskassignment.business.jpa.entity;
 
-import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.DiscriminatorOptions;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -26,7 +21,7 @@ import java.util.Map;
 @Setter
 @ToString
 @NoArgsConstructor
-public class PackageEntity {
+public abstract class PackageEntity {
 
   enum Type {
     ;
@@ -43,10 +38,15 @@ public class PackageEntity {
 
   private int weight;
 
+  public int getVolume() {
+    return 0;
+  }
+
   public Map<String,Integer> toMap() {
     Map<String,Integer> map = new HashMap<>();
 
     map.put("weight", weight);
+    map.put("volume", getVolume());
 
     return map;
   }
