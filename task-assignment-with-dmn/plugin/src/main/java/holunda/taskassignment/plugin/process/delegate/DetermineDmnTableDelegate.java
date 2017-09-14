@@ -27,7 +27,7 @@ public class DetermineDmnTableDelegate implements JavaDelegate {
 
     log.info("\n-----\n determineDmnTable\ntable={}\n-----\n", type);
 
-    if (repositoryService.createDecisionDefinitionQuery().decisionDefinitionKey(type).singleResult() == null) {
+    if (repositoryService.createDecisionDefinitionQuery().decisionDefinitionKey(type).latestVersion().singleResult() == null) {
       log.error("no decisionTable found for key: {}", type);
       throw new BpmnError("NoDmnTableFound");
     } else {

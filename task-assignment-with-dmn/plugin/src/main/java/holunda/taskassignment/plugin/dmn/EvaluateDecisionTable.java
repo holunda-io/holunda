@@ -8,6 +8,7 @@ import org.camunda.bpm.dmn.engine.DmnDecisionTableResult;
 import org.camunda.bpm.engine.DecisionService;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
 import java.util.function.BiFunction;
 
 /**
@@ -32,10 +33,6 @@ public class EvaluateDecisionTable implements BiFunction<String, BusinessData, C
 
     DmnDecisionRuleResult singleResult = result.getSingleResult();
 
-    String c = singleResult.getSingleEntry();
-
-    CandidateGroup cg = new CandidateGroup(c);
-
-    return cg;
+    return singleResult != null ? new CandidateGroup(singleResult.getSingleEntry()) : CandidateGroup.empty();
   }
 }
