@@ -51,7 +51,7 @@ public class ModifyTermsProcess implements JavaDelegate {
     String term = (String) execution.getVariable("term");
 
     Assert.isTrue(term != null, "term is null!");
-    termRepository.save(new TermEntity(null, term));
+    termRepository.save(new TermEntity(term));
 
     generateDmnTables.run();
   }

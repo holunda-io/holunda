@@ -85,7 +85,7 @@ public class GenerateDmnTables implements Runnable {
       });
 
       final OutputEntry outputEntry = DmnUtils.generateElement(dmnModelInstance, OutputEntry.class);
-      outputEntry.setText(DmnUtils.generateText(dmnModelInstance, t.getResult()));
+      outputEntry.setText(DmnUtils.generateText(dmnModelInstance, '"' + t.getResult() + '"'));
       rule.addChildElement(outputEntry);
 
     });

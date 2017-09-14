@@ -37,9 +37,9 @@ public class GeneratorProcessTest {
 
   @Before
   public void setUp() throws Exception {
-    termRepository.save(new TermEntity(null, "all: weight>10 := foo"));
-    termRepository.save(new TermEntity(null, "box: length<=100 := bar"));
-    termRepository.save(new TermEntity(null, "sphere: radius>=10 := bar"));
+    termRepository.save(new TermEntity("all: weight>10 := foo"));
+    termRepository.save(new TermEntity("box: length<=100 := bar"));
+    termRepository.save(new TermEntity("sphere: radius>=10 := bar"));
   }
 
   @Test

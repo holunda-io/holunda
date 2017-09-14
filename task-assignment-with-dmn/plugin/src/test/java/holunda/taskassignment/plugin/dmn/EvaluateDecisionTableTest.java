@@ -9,6 +9,7 @@ import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.spring.boot.starter.test.helper.StandaloneInMemoryTestConfiguration;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Deployment(resources = "Box.dmn")
+@Ignore
 public class EvaluateDecisionTableTest {
 
   @Rule
@@ -31,8 +33,9 @@ public class EvaluateDecisionTableTest {
 
   @Before
   public void setUp() throws Exception {
-    evaluate = new EvaluateDecisionTable(camunda.getDecisionService());
 
+
+    evaluate = new EvaluateDecisionTable(camunda.getDecisionService());
   }
 
   @Test

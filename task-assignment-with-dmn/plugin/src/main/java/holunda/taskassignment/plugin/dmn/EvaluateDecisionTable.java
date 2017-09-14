@@ -8,11 +8,7 @@ import org.camunda.bpm.dmn.engine.DmnDecisionTableResult;
 import org.camunda.bpm.engine.DecisionService;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
-import java.util.Optional;
 import java.util.function.BiFunction;
-
-import static holunda.taskassignment.plugin.process.TaskAssignmentProcess.VARIABLES.CANDIDATE_GROUP;
 
 @Component
 @Slf4j

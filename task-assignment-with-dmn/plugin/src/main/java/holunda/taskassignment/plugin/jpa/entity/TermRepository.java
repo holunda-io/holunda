@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 @Transactional
-public interface TermRepository extends CrudRepository<TermEntity, Integer> {
+public interface TermRepository extends CrudRepository<TermEntity, String> {
 
   List<TermEntity> findAll();
 }
