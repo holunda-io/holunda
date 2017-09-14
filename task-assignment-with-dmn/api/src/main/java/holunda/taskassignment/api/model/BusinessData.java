@@ -1,16 +1,15 @@
 package holunda.taskassignment.api.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Singular;
 import lombok.Value;
-import org.camunda.bpm.engine.variable.VariableMap;
-import org.camunda.bpm.engine.variable.Variables;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Generic representation of business data values, so the assignment process does not need to know
+ * the concrete model implementation.
+ */
 @Value
 public class BusinessData implements Serializable {
 

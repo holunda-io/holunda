@@ -21,6 +21,9 @@ import java.util.List;
 import static org.camunda.bpm.model.dmn.impl.DmnModelConstants.DMN_ELEMENT_DECISION_TABLE;
 import static org.camunda.bpm.model.dmn.impl.DmnModelConstants.DMN_ELEMENT_DEFINITIONS;
 
+/**
+ * Utility class to simplify usage of DmnModelApi.
+ */
 public final class DmnUtils {
   public static DmnModelInstance initializeEmptyDmnModel() {
     final DmnModelInstance dmnModel = Dmn.createEmptyModel();

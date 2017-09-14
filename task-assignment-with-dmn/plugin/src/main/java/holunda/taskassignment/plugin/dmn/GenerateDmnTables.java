@@ -1,7 +1,9 @@
 package holunda.taskassignment.plugin.dmn;
 
-import holunda.taskassignment.plugin.jpa.entity.TermEntity;
-import holunda.taskassignment.plugin.jpa.entity.TermRepository;
+import holunda.taskassignment.plugin.term.Term;
+import holunda.taskassignment.plugin.term.TermParser;
+import holunda.taskassignment.plugin.term.TermRepository;
+import holunda.taskassignment.plugin.term.entity.TermEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.repository.DeploymentBuilder;
@@ -33,7 +35,7 @@ import static org.camunda.bpm.model.dmn.impl.DmnModelConstants.DMN_ELEMENT_DECIS
 @Slf4j
 public class GenerateDmnTables implements Runnable {
 
-  public static DmnModelInstance generateTable(String name, List<TermParser.Term> terms) {
+  public static DmnModelInstance generateTable(String name, List<Term> terms) {
     // Build DMN model
     DmnModelInstance dmnModelInstance = DmnUtils.initializeEmptyDmnModel();
     Decision decision = DmnUtils.generateNamedElement(dmnModelInstance, Decision.class, name);
@@ -45,7 +47,7 @@ public class GenerateDmnTables implements Runnable {
     //Build Header
     Set<String> inputs = new LinkedHashSet<>();
 
-    for (TermParser.Term t : terms) {
+    for (Term t : terms) {
       Map<String, String> exp = t.getExpressions();
       for (String k : exp.keySet()) {
         inputs.add(k);
@@ -106,7 +108,7 @@ public class GenerateDmnTables implements Runnable {
 
   @Override
   public void run() {
-    List<TermParser.Term> terms = termRepository.findAll()
+    List<Term> terms = termRepository.findAll()
       .stream()
       .map(TermEntity::getTerm)
       .map(termParser)
@@ -115,11 +117,11 @@ public class GenerateDmnTables implements Runnable {
     log.info("terms: {}", terms);
 
 
-    Map<String, List<TermParser.Term>> map = terms.stream().collect(Collectors.groupingBy(TermParser.Term::getType));
-    List<TermParser.Term> all = map.getOrDefault("all", new ArrayList<>());
+    Map<String, List<Term>> map = terms.stream().collect(Collectors.groupingBy(Term::getType));
+    List<Term> all = map.getOrDefault("all", new ArrayList<>());
 
     DeploymentBuilder deploymentBuilder = repositoryService.createDeployment();
-    for (Map.Entry<String, List<TermParser.Term>> e : map.entrySet()) {
+    for (Map.Entry<String, List<Term>> e : map.entrySet()) {
       if ("all".equals(e.getKey())) {
         continue;
       }

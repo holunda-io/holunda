@@ -5,8 +5,8 @@ import holunda.taskassignment.api.model.BusinessData;
 import holunda.taskassignment.api.model.Variable;
 import holunda.taskassignment.plugin.TestApplication;
 import holunda.taskassignment.plugin.dmn.GenerateDmnTables;
-import holunda.taskassignment.plugin.jpa.entity.TermEntity;
-import holunda.taskassignment.plugin.jpa.entity.TermRepository;
+import holunda.taskassignment.plugin.term.TermRepository;
+import holunda.taskassignment.plugin.term.entity.TermEntity;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.extension.reactor.bus.CamundaEventBus;
@@ -22,7 +22,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.HashMap;
 import java.util.Map;
 
-import static holunda.taskassignment.plugin.process.TaskAssignmentProcess.FALLBACK_GROUP;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareAssertions.assertThat;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.task;
 import static org.camunda.bpm.engine.variable.Variables.putValue;

@@ -13,7 +13,7 @@ import java.util.Map;
 public interface Variable<T> {
 
   /**
-   * Global variable type that has to be set.
+   * Global variable type that has to be set on every instance.
    */
   Variable<String> TYPE = Variable.of("type");
 

@@ -1,7 +1,8 @@
-package holunda.taskassignment.plugin.dmn;
+package holunda.taskassignment.plugin.process;
 
-import holunda.taskassignment.plugin.jpa.entity.TermEntity;
-import holunda.taskassignment.plugin.jpa.entity.TermRepository;
+import holunda.taskassignment.plugin.dmn.GenerateDmnTables;
+import holunda.taskassignment.plugin.term.TermRepository;
+import holunda.taskassignment.plugin.term.entity.TermEntity;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.model.bpmn.Bpmn;
@@ -12,11 +13,22 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+/**
+ * Inline maintenance process that is deployed on engine start and can be manually started to
+ * add term expression to the {@link TermRepository}.
+ */
 @Component
 public class ModifyTermsProcess implements JavaDelegate {
 
   public static final String PROCESS_KEY = "modifyTerms";
   public static final String PROCESS_FILE = PROCESS_KEY + ".bpmn";
+
+  @Autowired
+  private TermRepository termRepository;
+
+  @Autowired
+  private GenerateDmnTables generateDmnTables;
+
   private final BpmnModelInstance process;
 
   public ModifyTermsProcess() {
@@ -32,18 +44,12 @@ public class ModifyTermsProcess implements JavaDelegate {
   }
 
   @EventListener
-  void deploy(PostDeployEvent event) {
+  void deploy(final PostDeployEvent event) {
     event.getProcessEngine().getRepositoryService()
       .createDeployment()
       .addModelInstance(PROCESS_FILE, process)
       .deploy();
   }
-
-  @Autowired
-  private TermRepository termRepository;
-
-  @Autowired
-  private GenerateDmnTables generateDmnTables;
 
 
   @Override

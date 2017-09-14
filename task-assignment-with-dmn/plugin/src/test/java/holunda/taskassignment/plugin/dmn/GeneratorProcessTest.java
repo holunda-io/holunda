@@ -2,8 +2,9 @@ package holunda.taskassignment.plugin.dmn;
 
 import holunda.taskassignment.api.BusinessDataService;
 import holunda.taskassignment.plugin.TestApplication;
-import holunda.taskassignment.plugin.jpa.entity.TermEntity;
-import holunda.taskassignment.plugin.jpa.entity.TermRepository;
+import holunda.taskassignment.plugin.process.GeneratorProcess;
+import holunda.taskassignment.plugin.term.TermRepository;
+import holunda.taskassignment.plugin.term.entity.TermEntity;
 import org.assertj.core.api.Assertions;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;

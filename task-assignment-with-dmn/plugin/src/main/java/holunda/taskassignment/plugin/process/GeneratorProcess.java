@@ -1,7 +1,6 @@
-package holunda.taskassignment.plugin.dmn;
+package holunda.taskassignment.plugin.process;
 
-import holunda.taskassignment.plugin.jpa.entity.TermEntity;
-import holunda.taskassignment.plugin.jpa.entity.TermRepository;
+import holunda.taskassignment.plugin.dmn.GenerateDmnTables;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -13,10 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
-
+/**
+ * Inline maintenance process that is deployed on engine start and can be manually started to generate dmn tables
+ * based on terms found in {@link holunda.taskassignment.plugin.term.TermRepository}.
+ */
 @Component
 @Slf4j
 public class GeneratorProcess implements JavaDelegate {
@@ -33,7 +32,6 @@ public class GeneratorProcess implements JavaDelegate {
       .serviceTask("generate").camundaDelegateExpression("${generatorProcess}")
       .endEvent()
       .done();
-
   }
 
   @EventListener

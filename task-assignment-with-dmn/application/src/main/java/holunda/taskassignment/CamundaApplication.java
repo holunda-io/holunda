@@ -14,30 +14,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.Collections;
 
+/**
+ * Main application staring camunda + webapp.
+ */
 @SpringBootApplication
 @EnableProcessApplication
 @Slf4j
-public class CamundaApplication implements CommandLineRunner {
+public class CamundaApplication {
 
   public static void main(String[] args) {
     SpringApplication.run(CamundaApplication.class, args);
   }
 
-  @Autowired
-  @Qualifier("readOnly")
-  private PackageRepository r;
-
-  @Autowired
-  private BusinessDataService businessDataService;
-
-  @Autowired
-  private RuntimeService runtimeService;
-
-  @Override
-  public void run(String... strings) throws Exception {
-    log.info("all:\n {}", r.findAll());
-
-    log.info("gold: {}", businessDataService.loadBusinessData(new BusinessKey("gold"), Collections.singleton("weight")));
-    log.info("gold: {}", businessDataService.loadBusinessData(new BusinessKey("gold"), Collections.singleton("length")));
-  }
 }

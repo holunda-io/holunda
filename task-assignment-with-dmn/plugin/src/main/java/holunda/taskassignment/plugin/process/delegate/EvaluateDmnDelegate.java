@@ -2,10 +2,8 @@ package holunda.taskassignment.plugin.process.delegate;
 
 import holunda.taskassignment.api.model.BusinessData;
 import holunda.taskassignment.api.model.CandidateGroup;
-import holunda.taskassignment.plugin.context.RequireNewTransaction;
 import holunda.taskassignment.plugin.dmn.EvaluateDecisionTable;
 import lombok.extern.slf4j.Slf4j;
-import org.camunda.bpm.engine.DecisionService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
@@ -14,18 +12,16 @@ import static holunda.taskassignment.plugin.process.TaskAssignmentProcess.VARIAB
 import static holunda.taskassignment.plugin.process.TaskAssignmentProcess.VARIABLES.CANDIDATE_GROUP;
 import static holunda.taskassignment.plugin.process.TaskAssignmentProcess.VARIABLES.DMN_TABLE;
 
+/**
+ * Evaluate given dmnTable with businessData loaded in {@link LoadRequiredDataDelegate}.
+ */
 @Component("evaluateDmn")
 @Slf4j
 public class EvaluateDmnDelegate implements JavaDelegate {
 
-  private final DecisionService decisionService;
-  private final RequireNewTransaction transactionWrapper;
   private final EvaluateDecisionTable evaluateDecisionTable;
 
-  public EvaluateDmnDelegate(DecisionService decisionService,
-                             RequireNewTransaction transactionWrapper, EvaluateDecisionTable evaluateDecisionTable) {
-    this.decisionService = decisionService;
-    this.transactionWrapper = transactionWrapper;
+  public EvaluateDmnDelegate(EvaluateDecisionTable evaluateDecisionTable) {
     this.evaluateDecisionTable = evaluateDecisionTable;
   }
 

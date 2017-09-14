@@ -18,6 +18,10 @@ import static holunda.taskassignment.plugin.process.TaskAssignmentProcess.VARIAB
 import static holunda.taskassignment.plugin.process.TaskAssignmentProcess.VARIABLES.BUSINESS_KEY;
 import static holunda.taskassignment.plugin.process.TaskAssignmentProcess.VARIABLES.DMN_TABLE;
 
+/**
+ * Analyses the required inputs of the dmnTable to evaluate and loads the
+ * current business data via {@link BusinessDataService}.
+ */
 @Component("loadRequiredData")
 @Slf4j
 public class LoadRequiredDataDelegate implements JavaDelegate {

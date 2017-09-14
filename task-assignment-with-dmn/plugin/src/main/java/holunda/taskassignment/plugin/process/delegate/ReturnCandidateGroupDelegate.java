@@ -27,10 +27,14 @@ public class ReturnCandidateGroupDelegate implements JavaDelegate{
 
   @Override
   public void execute(final DelegateExecution execution) throws Exception {
-    log.info("\n-----\n returnCandidateGroup \n-----\n");
-
     final CandidateGroup candidateGroup = new CandidateGroup(CANDIDATE_GROUP.getValue(execution));
     final String topic = TOPIC.getValue(execution);
+
+    log.info("\n-----\n returnCandidateGroup\n" +
+      "topic: {}\n" +
+      "candidateGroup: {}" +
+      "-----\n", topic, candidateGroup);
+
 
     camundaEventBus.get().notify(topic, Event.wrap(candidateGroup));
   }

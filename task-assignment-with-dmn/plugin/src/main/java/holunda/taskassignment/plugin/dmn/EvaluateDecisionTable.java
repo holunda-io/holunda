@@ -10,6 +10,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.function.BiFunction;
 
+/**
+ * Worker that actually calls an assignment dmnTable with required business data and returns a candidateGroup
+ * result.
+ *
+ * The result is never null, but might be empty, check with {@link CandidateGroup#isNotEmpty()}.
+ */
 @Component
 @Slf4j
 public class EvaluateDecisionTable implements BiFunction<String, BusinessData, CandidateGroup> {

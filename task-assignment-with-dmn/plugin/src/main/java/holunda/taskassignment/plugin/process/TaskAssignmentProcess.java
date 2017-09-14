@@ -1,8 +1,8 @@
 package holunda.taskassignment.plugin.process;
 
 import holunda.taskassignment.api.model.CandidateGroup;
-import holunda.taskassignment.plugin.api.TaskAssignmentCommand;
 import holunda.taskassignment.api.model.Variable;
+import holunda.taskassignment.plugin.api.TaskAssignmentCommand;
 import holunda.taskassignment.plugin.process.consumer.CandidateGroupConsumerFactory;
 import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static org.camunda.bpm.engine.delegate.TaskListener.EVENTNAME_CREATE;
-import static reactor.bus.selector.Selectors.$;
 
 /**
  * Class resembling the assignment process. Registers on {@link CamundaEventBus} and is called
@@ -27,7 +26,7 @@ import static reactor.bus.selector.Selectors.$;
 public class TaskAssignmentProcess implements Function<TaskAssignmentCommand, CandidateGroup> {
 
   /**
-   * Processvariable contstants for process.
+   * Process variable contstants for process.
    */
   public enum VARIABLES {
     ;

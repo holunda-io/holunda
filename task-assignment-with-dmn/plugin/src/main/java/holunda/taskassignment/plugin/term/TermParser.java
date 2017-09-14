@@ -1,30 +1,15 @@
-package holunda.taskassignment.plugin.dmn;
+package holunda.taskassignment.plugin.term;
 
-import lombok.Builder;
-import lombok.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Component
-public class TermParser implements Function<String, TermParser.Term> {
-
-  @Value
-  @Builder
-  public static class Term {
-
-    private String type;
-
-    private Map<String, String> expressions;
-
-    private String result;
-  }
+public class TermParser implements Function<String, Term> {
 
 
   public static final String PATTERN = "^([a-zA-Z]+)([<>=]{1,2})(\\d+)";

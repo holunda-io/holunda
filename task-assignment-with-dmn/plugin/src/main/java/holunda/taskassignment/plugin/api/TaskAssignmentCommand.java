@@ -13,6 +13,9 @@ import org.camunda.bpm.engine.variable.Variables;
 import java.io.Serializable;
 import java.util.UUID;
 
+/**
+ * Holds all required values to trigger a {@link TaskAssignmentProcess} run.
+ */
 @Value
 @Builder
 public class TaskAssignmentCommand implements Serializable {
@@ -40,6 +43,11 @@ public class TaskAssignmentCommand implements Serializable {
   private String taskDefinitionKey;
   private String type;
 
+  /**
+   * Randomized topic.
+   *
+   * @return topic used to return process evaluation result
+   */
   public String getTopic() {
     return createTopic(taskId, uuid);
   }

@@ -11,6 +11,9 @@ import org.camunda.bpm.extension.reactor.spring.listener.ReactorExecutionListene
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * Listener on startEvent that ensures the required type variable ({@link Variable#TYPE} is present on process.
+ */
 @Component
 @Slf4j
 public class SetTypeListener implements ExecutionListener {

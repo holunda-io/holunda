@@ -1,5 +1,7 @@
 package holunda.taskassignment.plugin.dmn;
 
+import holunda.taskassignment.plugin.term.Term;
+import holunda.taskassignment.plugin.term.TermParser;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,7 +14,7 @@ public class TermParserTest {
 
   @Test
   public void parseT1() throws Exception {
-    TermParser.Term term = parser.apply(T1);
+    Term term = parser.apply(T1);
     assertThat(term.getType()).isEqualTo("box");
     assertThat(term.getExpressions()).containsKeys("width", "height", "weight");
     assertThat(term.getResult()).isEqualTo("fooGroup");

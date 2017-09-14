@@ -6,7 +6,7 @@ import org.camunda.bpm.extension.reactor.bus.CamundaEventBus;
 import org.springframework.stereotype.Component;
 
 /**
- * Creates a new {@link CandidateGroupConsumer}.
+ * Creates a new {@link CandidateGroupConsumer}. We need to use a new instance for each assignment.
  */
 @Component
 public class CandidateGroupConsumerFactory {
