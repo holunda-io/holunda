@@ -1,0 +1,10 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+camunda:
+  bpm:
+    admin-user:
+      id: demo
+
