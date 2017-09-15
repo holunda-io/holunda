@@ -14,7 +14,7 @@ public class TermParserTest {
 
   @Test
   public void parseT1() throws Exception {
-    Term term = parser.apply(T1);
+    final Term term = parser.apply(T1);
     assertThat(term.getType()).isEqualTo("box");
     assertThat(term.getExpressions()).containsKeys("width", "height", "weight");
     assertThat(term.getResult()).isEqualTo("fooGroup");

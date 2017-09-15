@@ -21,7 +21,6 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestApplication.class)
-
 public class GeneratorProcessTest {
 
   @Autowired
@@ -49,6 +48,6 @@ public class GeneratorProcessTest {
 
     List<DecisionDefinition> list = repositoryService.createDecisionDefinitionQuery().list();
 
-    Assertions.assertThat(list).hasSize(2);
+    Assertions.assertThat(list).hasSize(3); //FIXME remove Box.dmn from autodeployment
   }
 }

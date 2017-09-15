@@ -19,7 +19,6 @@ import java.util.HashMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Deployment(resources = "Box.dmn")
-@Ignore
 public class EvaluateDecisionTableTest {
 
   @Rule
@@ -33,46 +32,38 @@ public class EvaluateDecisionTableTest {
 
   @Before
   public void setUp() throws Exception {
-
-
     evaluate = new EvaluateDecisionTable(camunda.getDecisionService());
   }
 
   @Test
   public void evaluate_3() throws Exception {
-
     final HashMap<String,Integer> data = new HashMap<>();
     data.put("in", 3);
     businessData = new BusinessData(data);
 
-    CandidateGroup result = evaluate.apply("Box", businessData);
-
+    final CandidateGroup result = evaluate.apply("box", businessData);
 
     assertThat(result).isNotNull();
     assertThat(result.isNotEmpty()).isTrue();
     assertThat(result.getName()).isEqualTo("foo");
-
   }
 
   @Test
   public void evaluate_0() throws Exception {
-
     final HashMap<String,Integer> data = new HashMap<>();
     data.put("in", 0);
     businessData = new BusinessData(data);
 
-    CandidateGroup result = evaluate.apply("Box", businessData);
-
+    final CandidateGroup result = evaluate.apply("box", businessData);
 
     assertThat(result).isNotNull();
     assertThat(result.isNotEmpty()).isTrue();
     assertThat(result.getName()).isEqualTo("bar");
-
   }
 
   @Test
+  @Ignore //FIXME transaction wrapper is needed to fix this
   public void evaluate_table_wrong() throws Exception {
-
     thrown.expect(ProcessEngineException.class);
     thrown.expectMessage("no decision definition deployed with key 'Box1'");
 
@@ -80,12 +71,11 @@ public class EvaluateDecisionTableTest {
     data.put("in", 3);
     businessData = new BusinessData(data);
 
-    CandidateGroup result = evaluate.apply("Box1", businessData);
+    evaluate.apply("box1", businessData);
   }
 
   @Test
   public void evaluate_input_wrong() throws Exception {
-
     thrown.expect(ProcessEngineException.class);
     thrown.expectCause(CoreMatchers.is(DmnEvaluationException.class));
 
@@ -93,8 +83,7 @@ public class EvaluateDecisionTableTest {
     data.put("abc", 3);
     businessData = new BusinessData(data);
 
-    CandidateGroup result = evaluate.apply("Box", businessData);
+    evaluate.apply("box", businessData);
   }
-
 
 }
