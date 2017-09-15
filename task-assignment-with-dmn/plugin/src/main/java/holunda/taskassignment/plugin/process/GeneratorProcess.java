@@ -27,7 +27,7 @@ public class GeneratorProcess implements JavaDelegate {
   private Deployment deployment;
 
   public GeneratorProcess() {
-    this.process = Bpmn.createExecutableProcess(PROCESS_KEY)
+    this.process = Bpmn.createExecutableProcess(PROCESS_KEY).name("Generate DMNs")
       .startEvent()
       .serviceTask("generate").camundaDelegateExpression("${generatorProcess}")
       .endEvent()

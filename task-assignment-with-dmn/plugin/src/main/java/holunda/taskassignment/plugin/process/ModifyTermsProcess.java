@@ -32,7 +32,7 @@ public class ModifyTermsProcess implements JavaDelegate {
   private final BpmnModelInstance process;
 
   public ModifyTermsProcess() {
-    this.process = Bpmn.createExecutableProcess(PROCESS_KEY)
+    this.process = Bpmn.createExecutableProcess(PROCESS_KEY).name("Modify Terms")
       .startEvent().camundaFormField()
       .camundaId("term")
       .camundaLabel("Term")

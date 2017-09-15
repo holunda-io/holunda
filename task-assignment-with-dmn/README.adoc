@@ -5,7 +5,7 @@
 1. Start Spring Boot Application (CamundaApplication), this will additionaly start the camunda webapp
 2. Goto http://localhost:8080/ and login as admin/admin
 3. Goto Tasklist to start following processes:
-a. "modifyTerms" ... to add a new term / dmn row. This will automatically regenerate all DMNs.
+a. "Modify Terms" ... to add a new term / dmn row. This will automatically regenerate all DMNs.
 b. "Package Shipment" ... to start the shipment process for a package where the magic of automatically task assignment happens
 
 ## Term Format
