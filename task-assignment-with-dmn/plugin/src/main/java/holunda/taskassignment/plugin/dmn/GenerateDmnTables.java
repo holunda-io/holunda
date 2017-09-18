@@ -95,7 +95,6 @@ public class GenerateDmnTables implements Runnable {
     return dmnModelInstance;
   }
 
-
   @Autowired
   private TermRepository termRepository;
 
@@ -108,7 +107,7 @@ public class GenerateDmnTables implements Runnable {
 
   @Override
   public void run() {
-    List<Term> terms = termRepository.findAll()
+    final List<Term> terms = termRepository.findAll()
       .stream()
       .map(TermEntity::getTerm)
       .map(termParser)
@@ -116,26 +115,26 @@ public class GenerateDmnTables implements Runnable {
 
     log.info("terms: {}", terms);
 
+    final Map<String, List<Term>> map = terms.stream().collect(Collectors.groupingBy(Term::getType));
+    final List<Term> all = map.getOrDefault("all", new ArrayList<>());
 
-    Map<String, List<Term>> map = terms.stream().collect(Collectors.groupingBy(Term::getType));
-    List<Term> all = map.getOrDefault("all", new ArrayList<>());
-
-    DeploymentBuilder deploymentBuilder = repositoryService.createDeployment();
+    final DeploymentBuilder deploymentBuilder = repositoryService.createDeployment();
     for (Map.Entry<String, List<Term>> e : map.entrySet()) {
       if ("all".equals(e.getKey())) {
         continue;
       }
+
       e.getValue().addAll(all);
 
-      DmnModelInstance dmnModelInstance = generateTable(e.getKey(), e.getValue());
+      final DmnModelInstance dmnModelInstance = generateTable(e.getKey(), e.getValue());
 
       deploymentBuilder.addModelInstance(e.getKey() + ".dmn", dmnModelInstance);
     }
 
-    log.info("terms: {}", map);
+    if(deploymentBuilder.getResourceNames().size() > 0) {
+      deploymentBuilder.deploy();
+    }
 
-    deploymentBuilder.deploy();
   }
-
 
 }

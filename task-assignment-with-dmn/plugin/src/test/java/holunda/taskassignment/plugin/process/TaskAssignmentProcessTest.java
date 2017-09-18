@@ -29,7 +29,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anySet;
 import static org.mockito.Mockito.when;
 
-@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestApplication.class)
 public class TaskAssignmentProcessTest {
@@ -58,22 +57,21 @@ public class TaskAssignmentProcessTest {
     data.put("weight", 500);
     when(businessDataService.loadBusinessData(any(), anySet())).thenReturn(new BusinessData(data));
 
+    termRepository.deleteAll();
     termRepository.save(new TermEntity("sphere: weight>100 := heavy"));
 
     generateDmnTables.run();
-
   }
 
   @Test
+  @Ignore //FIXME fails if is running after other tests, but succeeds when running allone ...
   public void start_via_command() throws Exception {
-
     final ProcessInstance instance = runtimeService.startProcessInstanceByKey("TestProcess",
-      "1",
+      "10",
       putValue(Variable.TYPE.name(), "sphere")
     );
     assertThat(instance).isWaitingAt("TestTask");
 
     assertThat(task()).hasCandidateGroup("heavy");
-
   }
 }

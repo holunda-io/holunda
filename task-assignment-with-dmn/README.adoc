@@ -1,0 +1,41 @@
+# Task Assignment with DMN
+
+## How to start / play around
+
+1. Start Spring Boot Application (CamundaApplication), this will additionaly start the camunda webapp
+2. Goto http://localhost:8080/ and login as admin/admin
+3. Goto Tasklist to start following processes:
+a. "Modify Terms" ... to add a new term / dmn row. This will automatically regenerate all DMNs.
+b. "Package Shipment" ... to start the shipment process for a package where the magic of automatically task assignment happens
+
+## Term Format
+
+A term could be added via modifyTerms process using following format (blanks are ignored):
+
+`[type]: [expression] & [expression] & ... := candidateGroup`
+
+Where an expression looks like the following:
+
+`[business data] [<>=] [some number]`
+
+*Possible Types:*
+
+- sphere
+- box
+- all
+
+*Possible Business Data:*
+
+- weight
+- width
+- height
+- radius
+- length
+
+*Example:*
+
+`box: width >= 7 & height < 20 & weight = 10 : = fooGroup`
+
+## Packages
+
+See `V2_1__initial_data.sql` for possible packages.
