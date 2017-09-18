@@ -18,10 +18,10 @@ import org.springframework.util.Assert;
  * add term expression to the {@link TermRepository}.
  */
 @Component
-public class ModifyTermsProcess implements JavaDelegate {
+public class AddDecisionProcess implements JavaDelegate {
 
-  public static final String PROCESS_KEY = "modifyTerms";
-  public static final String PROCESS_FILE = PROCESS_KEY + ".bpmn";
+  public static final String PROCESS_KEY = "addDecision";
+  public static final String PROCESS_FILE = "AddDecision.bpmn";
 
   @Autowired
   private TermRepository termRepository;
@@ -31,14 +31,14 @@ public class ModifyTermsProcess implements JavaDelegate {
 
   private final BpmnModelInstance process;
 
-  public ModifyTermsProcess() {
-    this.process = Bpmn.createExecutableProcess(PROCESS_KEY)
+  public AddDecisionProcess() {
+    this.process = Bpmn.createExecutableProcess(PROCESS_KEY).name("_Add Decision")
       .startEvent().camundaFormField()
       .camundaId("term")
-      .camundaLabel("Term")
+      .camundaLabel("Decision")
       .camundaType("string")
       .camundaFormFieldDone()
-      .serviceTask("createTerm").name("Create Term").camundaDelegateExpression("${modifyTermsProcess}")
+      .serviceTask("createTerm").name("Create Term").camundaDelegateExpression("${addDecisionProcess}")
       .endEvent()
       .done();
   }

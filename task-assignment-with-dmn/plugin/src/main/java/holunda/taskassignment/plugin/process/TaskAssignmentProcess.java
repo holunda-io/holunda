@@ -44,12 +44,12 @@ public class TaskAssignmentProcess implements Function<TaskAssignmentCommand, Ca
     /**
      * The processDefinitionKey.
      */
-    public static final String KEY = "TaskAssignmentProcess";
+    public static final String KEY = "taskAssignmentProcess";
 
     /**
      * The process bpmn-resource.
      */
-    public static final String BPMN = KEY + ".bpmn";
+    public static final String BPMN = "TaskAssignmentProcess.bpmn";
   }
 
   /**
