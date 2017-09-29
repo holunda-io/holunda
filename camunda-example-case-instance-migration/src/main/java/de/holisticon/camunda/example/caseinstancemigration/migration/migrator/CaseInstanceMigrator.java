@@ -17,10 +17,12 @@ import org.camunda.bpm.engine.impl.cmmn.entity.runtime.CaseExecutionEntity;
 import org.camunda.bpm.engine.impl.history.HistoryLevel;
 import org.camunda.bpm.engine.impl.history.event.HistoryEvent;
 import org.camunda.bpm.engine.impl.history.event.HistoryEventTypes;
+import org.camunda.bpm.engine.impl.history.handler.HistoryEventHandler;
 import org.camunda.bpm.engine.impl.history.producer.DefaultCmmnHistoryEventProducer;
 import org.camunda.bpm.engine.impl.history.producer.DefaultHistoryEventProducer;
 import org.camunda.bpm.engine.impl.persistence.entity.TaskEntity;
 import org.camunda.bpm.engine.repository.CaseDefinition;
+import org.camunda.bpm.engine.repository.ResourceDefinition;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -50,15 +52,15 @@ public class CaseInstanceMigrator {
 
     log.info(String.format("Latest case definition id is '%s'", latestCaseDefId));
 
-    migrateAllCaseInstances(latestCaseDefId);
+    migrateAllCaseInstances(caseDefinitionKey, latestCaseDefId);
 
-    migrateAllTasks(latestCaseDefId);
+    migrateAllTasks(caseDefinitionKey, latestCaseDefId);
 
     log.info("Migration completed");
   }
 
-  private void migrateAllCaseInstances(@NonNull final String targetCaseDefId) {
-    final List<CamundaCaseExecution> executionsToMigrate = ImmutableList.copyOf(camundaCaseExecutionRepository.findByCaseDefinitionIdIsNot(targetCaseDefId));
+  private void migrateAllCaseInstances(@NonNull final String caseDefinitionKey, @NonNull final String targetCaseDefId) {
+    final List<CamundaCaseExecution> executionsToMigrate = ImmutableList.copyOf(camundaCaseExecutionRepository.findByCaseDefinitionIdIn(getAllButTargetCaseDefinitionIds(caseDefinitionKey, targetCaseDefId)));
 
     log.info(String.format("Found %d executions to migrate", executionsToMigrate.size()));
 
@@ -77,8 +79,7 @@ public class CaseInstanceMigrator {
 
 
   private void produceCaseInstanceHistoryEvents(@NonNull final List<String> caseInstanceIds) {
-    final HistoryLevel historyLevel = ((ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration()).getHistoryLevel();
-    if (historyLevel.isHistoryEventProduced(HistoryEventTypes.CASE_INSTANCE_UPDATE, null)) {
+    if (getHistoryLevel().isHistoryEventProduced(HistoryEventTypes.CASE_INSTANCE_UPDATE, null)) {
       log.info("Producing history events for case instances");
       caseInstanceIds.forEach(this::produceCaseInstanceHistoryEventsForOneCaseInstance);
     }
@@ -93,14 +94,12 @@ public class CaseInstanceMigrator {
       throw new IllegalStateException(String.format("Case instance '%s' not found", caseInstanceId));
     }
 
-    final ProcessEngineConfigurationImpl configuration = (ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration();
-
     final HistoryEvent event = new DefaultCmmnHistoryEventProducer().createCaseInstanceUpdateEvt(caseInstance);
-    configuration.getHistoryEventHandler().handleEvent(event);
+    getHistoryEventHandler().handleEvent(event);
   }
 
-  private void migrateAllTasks(@NonNull final String targetCaseDefId) {
-    final List<CamundaTask> tasksToMigrate = ImmutableList.copyOf(camundaTaskRepository.findByCaseDefinitionIdIsNotNullAndCaseDefinitionIdIsNot(targetCaseDefId));
+  private void migrateAllTasks(@NonNull final String caseDefinitionKey, @NonNull final String targetCaseDefId) {
+    final List<CamundaTask> tasksToMigrate = ImmutableList.copyOf(camundaTaskRepository.findByCaseDefinitionIdIsIn(getAllButTargetCaseDefinitionIds(caseDefinitionKey, targetCaseDefId)));
 
     log.info(String.format("Found %d tasks to migrate", tasksToMigrate.size()));
 
@@ -126,10 +125,10 @@ public class CaseInstanceMigrator {
       throw new IllegalStateException(String.format("Task '%s' not found", taskId));
     }
 
-    final ProcessEngineConfigurationImpl configuration = (ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration();
-
-    final HistoryEvent event = new DefaultHistoryEventProducer().createTaskInstanceMigrateEvt(task);
-    configuration.getHistoryEventHandler().handleEvent(event);
+    if (getHistoryLevel().isHistoryEventProduced(HistoryEventTypes.CASE_INSTANCE_UPDATE, null)) {
+      final HistoryEvent event = new DefaultHistoryEventProducer().createTaskInstanceMigrateEvt(task);
+      getHistoryEventHandler().handleEvent(event);
+    }
   }
 
   private String getLatestCaseDefinitionId(@NonNull String caseDefinitionKey) {
@@ -140,5 +139,23 @@ public class CaseInstanceMigrator {
     }
 
     return caseDefinition.getId();
+  }
+
+  private List<String> getAllButTargetCaseDefinitionIds(@NonNull final String caseDefinitionKey, @NonNull final String targetCaseDefinitionId) {
+    final List<CaseDefinition> caseDefinitions = ImmutableList.copyOf(repositoryService.createCaseDefinitionQuery().caseDefinitionKey(caseDefinitionKey).list());
+
+    ImmutableList<String> caseDefinitionIds = ImmutableList.copyOf(caseDefinitions.stream().filter(def -> !def.getId().equals(targetCaseDefinitionId)).map(ResourceDefinition::getId).collect(Collectors.toList()));
+
+    caseDefinitionIds.forEach(def -> log.info(String.format("Case definition id for migration: '%s'", def)));
+
+    return caseDefinitionIds;
+  }
+
+  private HistoryEventHandler getHistoryEventHandler() {
+    return ((ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration()).getHistoryEventHandler();
+  }
+
+  private HistoryLevel getHistoryLevel() {
+    return ((ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration()).getHistoryLevel();
   }
 }

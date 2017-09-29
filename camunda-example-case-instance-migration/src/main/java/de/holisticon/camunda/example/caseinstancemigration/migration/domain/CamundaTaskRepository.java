@@ -7,5 +7,5 @@ import java.util.List;
 
 @Repository
 public interface CamundaTaskRepository extends JpaRepository<CamundaTask, Integer> {
-    List<CamundaTask> findByCaseDefinitionIdIsNotNullAndCaseDefinitionIdIsNot(String caseDefinitionId);
+  List<CamundaTask> findByCaseDefinitionIdIsIn(List<String> caseDefinitionIds);
 }
