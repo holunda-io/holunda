@@ -7,5 +7,5 @@ import java.util.List;
 
 @Repository
 public interface CamundaCaseExecutionRepository extends JpaRepository<CamundaCaseExecution, Integer> {
-  List<CamundaCaseExecution> findByCaseDefinitionIdIn(List<String> caseDefinitionIds);
+    List<CamundaCaseExecution> findByCaseInstanceId(String caseInstanceId);
 }

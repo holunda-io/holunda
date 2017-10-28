@@ -13,11 +13,11 @@ import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.model.cmmn.Cmmn;
 import org.camunda.bpm.model.cmmn.CmmnModelInstance;
 import org.camunda.bpm.model.cmmn.instance.*;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -30,131 +30,98 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 public class CaseInstanceMigratorTest {
 
-  @Autowired
-  private CaseService caseService;
+    @Autowired
+    private CaseService caseService;
 
-  @Autowired
-  private TaskService taskService;
+    @Autowired
+    private TaskService taskService;
 
-  @Autowired
-  private RepositoryService repositoryService;
+    @Autowired
+    private RepositoryService repositoryService;
 
-  @Autowired
-  private CaseInstanceMigrator caseInstanceMigrator;
+    @Autowired
+    private ProcessEngine processEngine;
 
-  @Autowired
-  private ProcessEngine processEngine;
+    @Autowired
+    private ApplicationContext ctx;
 
-  @Autowired
-  private MigrateCaseInstanceVersionCmd cmd;
+    private static String CASE_KEY = "my_case_mock";
 
-  private static String CASE_KEY = "my_case_mock";
+    private static String HUMAN_TASK_KEY = "my_case_mock_human_task";
 
-  private static String HUMAN_TASK_KEY = "my_case_mock_human_task";
+    private CaseDefinition oldCaseDefinition;
 
-  private CaseDefinition oldCaseDefinition;
+    private CaseDefinition newCaseDefinition;
 
-  private CaseDefinition newCaseDefinition;
+    @Test
+    public void shouldMigrateCaseInstancesWithTasksUsingCommand() {
+        deployCaseMock();
 
-  @Ignore
-  @Test
-  public void shouldMigrateCaseInstancesWithTasks() {
-    deployCaseMock();
+        oldCaseDefinition = repositoryService.createCaseDefinitionQuery().caseDefinitionKey(CASE_KEY).latestVersion().singleResult();
 
-    oldCaseDefinition = repositoryService.createCaseDefinitionQuery().caseDefinitionKey(CASE_KEY).latestVersion().singleResult();
+        caseService.createCaseInstanceByKey(CASE_KEY);
 
-    caseService.createCaseInstanceByKey(CASE_KEY);
+        deployCaseMock();
 
-    deployCaseMock();
+        // We should now have a latest definition different from the old one
+        newCaseDefinition = repositoryService.createCaseDefinitionQuery().caseDefinitionKey(CASE_KEY).latestVersion().singleResult();
+        assertThat(newCaseDefinition.getId()).isNotEqualTo(oldCaseDefinition.getId());
 
-    // We should now have a latest definition different from the old one
-    newCaseDefinition = repositoryService.createCaseDefinitionQuery().caseDefinitionKey(CASE_KEY).latestVersion().singleResult();
-    assertThat(newCaseDefinition.getId()).isNotEqualTo(oldCaseDefinition.getId());
+        // Currently all case executions should have the OLD definition
+        List<CaseExecution> caseExecutions = caseService.createCaseExecutionQuery().list();
+        assertThat(caseExecutions.stream().allMatch(e -> e.getCaseDefinitionId().equals(oldCaseDefinition.getId()))).isTrue();
 
-    // Currently all case executions should have the OLD definition
-    List<CaseExecution> caseExecutions = caseService.createCaseExecutionQuery().list();
-    assertThat(caseExecutions.stream().allMatch(e -> e.getCaseDefinitionId().equals(oldCaseDefinition.getId()))).isTrue();
+        // Currently the task should have the OLD definition
+        Task task = taskService.createTaskQuery().taskDefinitionKey(HUMAN_TASK_KEY).singleResult();
+        assertThat(task.getCaseDefinitionId()).isEqualTo(oldCaseDefinition.getId());
 
-    // Currently the task should have the OLD definition
-    Task task = taskService.createTaskQuery().taskDefinitionKey(HUMAN_TASK_KEY).singleResult();
-    assertThat(task.getCaseDefinitionId()).isEqualTo(oldCaseDefinition.getId());
+        // Perform migration
+        ((ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration()).getCommandExecutorTxRequired().execute(new MigrateCaseInstanceVersionCmd(CASE_KEY, ctx));
 
-    // Perform migration
-    caseInstanceMigrator.migrateCasesToLatestVersion(CASE_KEY);
+        assertThatExecutionsAreMigrated();
+        assertThatTasksAreMigrated();
+    }
 
-    assertThatExecutionsAreMigrated();
-    assertThatTasksAreMigrated();
-  }
+    private void assertThatExecutionsAreMigrated() {
+        List<CaseExecution> caseExecutions = caseService.createCaseExecutionQuery().list();
 
-  @Test
-  public void shouldMigrateCaseInstancesWithTasksUsingCommand() {
-    deployCaseMock();
+        // Now all case executions should have the NEW definition
+        assertThat(caseExecutions.stream().allMatch(e -> e.getCaseDefinitionId().equals(newCaseDefinition.getId()))).isTrue();
+    }
 
-    oldCaseDefinition = repositoryService.createCaseDefinitionQuery().caseDefinitionKey(CASE_KEY).latestVersion().singleResult();
+    private void assertThatTasksAreMigrated() {
+        Task task = taskService.createTaskQuery().taskDefinitionKey(HUMAN_TASK_KEY).singleResult();
 
-    caseService.createCaseInstanceByKey(CASE_KEY);
+        // Now the task should have the NEW definition
+        assertThat(task.getCaseDefinitionId()).isEqualTo(newCaseDefinition.getId());
+    }
 
-    deployCaseMock();
+    private void deployCaseMock() {
+        CmmnModelInstance caseMock = Cmmn.createEmptyModel();
 
-    // We should now have a latest definition different from the old one
-    newCaseDefinition = repositoryService.createCaseDefinitionQuery().caseDefinitionKey(CASE_KEY).latestVersion().singleResult();
-    assertThat(newCaseDefinition.getId()).isNotEqualTo(oldCaseDefinition.getId());
+        Definitions definitions = caseMock.newInstance(Definitions.class);
+        definitions.setTargetNamespace("http://camunda.org/examples");
+        caseMock.setDefinitions(definitions);
 
-    // Currently all case executions should have the OLD definition
-    List<CaseExecution> caseExecutions = caseService.createCaseExecutionQuery().list();
-    assertThat(caseExecutions.stream().allMatch(e -> e.getCaseDefinitionId().equals(oldCaseDefinition.getId()))).isTrue();
+        Case caseElement = caseMock.newInstance(Case.class);
+        caseElement.setId(CASE_KEY);
+        definitions.addChildElement(caseElement);
 
-    // Currently the task should have the OLD definition
-    Task task = taskService.createTaskQuery().taskDefinitionKey(HUMAN_TASK_KEY).singleResult();
-    assertThat(task.getCaseDefinitionId()).isEqualTo(oldCaseDefinition.getId());
+        CasePlanModel casePlanModel = caseMock.newInstance(CasePlanModel.class);
+        casePlanModel.setId(CASE_KEY + "_case");
+        caseElement.addChildElement(casePlanModel);
 
-    // Perform migration
-    ((ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration()).getCommandExecutorTxRequired().execute(cmd);
+        HumanTask humanTask = caseMock.newInstance(HumanTask.class);
+        humanTask.setId(HUMAN_TASK_KEY + "_task");
+        casePlanModel.addChildElement(humanTask);
 
-    assertThatExecutionsAreMigrated();
-    assertThatTasksAreMigrated();
-  }
+        PlanItem planItem = caseMock.newInstance(PlanItem.class);
+        planItem.setId(HUMAN_TASK_KEY);
+        casePlanModel.addChildElement(planItem);
 
-  private void assertThatExecutionsAreMigrated() {
-    List<CaseExecution> caseExecutions = caseService.createCaseExecutionQuery().list();
-
-    // Now all case executions should have the NEW definition
-    assertThat(caseExecutions.stream().allMatch(e -> e.getCaseDefinitionId().equals(newCaseDefinition.getId()))).isTrue();
-  }
-
-  private void assertThatTasksAreMigrated() {
-    Task task = taskService.createTaskQuery().taskDefinitionKey(HUMAN_TASK_KEY).singleResult();
-
-    // Now the task should have the NEW definition
-    assertThat(task.getCaseDefinitionId()).isEqualTo(newCaseDefinition.getId());
-  }
-
-  private void deployCaseMock() {
-    CmmnModelInstance caseMock = Cmmn.createEmptyModel();
-
-    Definitions definitions = caseMock.newInstance(Definitions.class);
-    definitions.setTargetNamespace("http://camunda.org/examples");
-    caseMock.setDefinitions(definitions);
-
-    Case caseElement = caseMock.newInstance(Case.class);
-    caseElement.setId(CASE_KEY);
-    definitions.addChildElement(caseElement);
-
-    CasePlanModel casePlanModel = caseMock.newInstance(CasePlanModel.class);
-    casePlanModel.setId(CASE_KEY + "_case");
-    caseElement.addChildElement(casePlanModel);
-
-    HumanTask humanTask = caseMock.newInstance(HumanTask.class);
-    humanTask.setId(HUMAN_TASK_KEY + "_task");
-    casePlanModel.addChildElement(humanTask);
-
-    PlanItem planItem = caseMock.newInstance(PlanItem.class);
-    planItem.setId(HUMAN_TASK_KEY);
-    casePlanModel.addChildElement(planItem);
-
-    planItem.setDefinition(humanTask);
-    Cmmn.validateModel(caseMock);
-    repositoryService.createDeployment().addModelInstance("mock/" + "my_case_mock.cmmn", caseMock).deploy();
-  }
+        planItem.setDefinition(humanTask);
+        Cmmn.validateModel(caseMock);
+        repositoryService.createDeployment().addModelInstance("mock/" + "my_case_mock.cmmn", caseMock).deploy();
+    }
 
 }

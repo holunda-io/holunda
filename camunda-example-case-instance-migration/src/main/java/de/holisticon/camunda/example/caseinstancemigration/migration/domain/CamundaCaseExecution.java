@@ -12,7 +12,7 @@ import javax.persistence.Version;
 @Getter
 @Entity
 @Table(name = "ACT_RU_CASE_EXECUTION")
-public class CamundaCaseExecution {
+public final class CamundaCaseExecution {
 
     @Id
     @Column(name = "ID_")
@@ -29,5 +29,6 @@ public class CamundaCaseExecution {
     @Column(name = "CASE_DEF_ID_")
     private String caseDefinitionId;
 
-    private CamundaCaseExecution(){} //NOSONAR
+    private CamundaCaseExecution() {
+    } //NOSONAR
 }

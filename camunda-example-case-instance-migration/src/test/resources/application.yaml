@@ -6,6 +6,4 @@ spring:
 camunda:
   bpm:
     migration:
-      case-instance-migration-on-startup: true
-    admin-user:
-      id: demo
+      case-instance-migration-on-startup: false
