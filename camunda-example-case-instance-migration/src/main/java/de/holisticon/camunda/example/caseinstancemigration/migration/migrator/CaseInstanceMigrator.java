@@ -1,8 +1,8 @@
 package de.holisticon.camunda.example.caseinstancemigration.migration.migrator;
 
-
 import de.holisticon.camunda.example.caseinstancemigration.migration.domain.CamundaCaseExecution;
 import de.holisticon.camunda.example.caseinstancemigration.migration.domain.CamundaCaseExecutionRepository;
+import de.holisticon.camunda.example.caseinstancemigration.migration.migrator.steps.CaseExecutionMigrationStep;
 import jersey.repackaged.com.google.common.collect.ImmutableList;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
 @Component
@@ -34,6 +35,8 @@ public class CaseInstanceMigrator {
     private final CaseService caseService;
 
     private final TaskMigrator taskMigrator;
+
+    private final List<CaseExecutionMigrationStep> migrationSteps;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void migrateOneCaseInstance(@NonNull final String caseInstanceId, @NonNull final String targetCaseDefId) {
@@ -55,7 +58,11 @@ public class CaseInstanceMigrator {
 
         execution.setCaseDefinitionId(targetCaseDefId);
 
-        camundaCaseExecutionRepository.save(execution);
+        final AtomicReference<CamundaCaseExecution> executionRef = new AtomicReference<>(execution);
+
+        migrationSteps.forEach(step -> executionRef.set(step.migrate(executionRef.get())));
+
+        camundaCaseExecutionRepository.save(executionRef.get());
     }
 
     private void produceCaseInstanceHistoryEventsForOneCaseInstance(@NonNull final String caseInstanceId) {
