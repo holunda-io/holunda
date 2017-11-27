@@ -1,5 +1,8 @@
 # Task Assignment with DMN
 
+
+moved to: https://github.com/holunda-io/example-task-assignment-with-dmn
+
 ## How to start / play around
 
 1. Start Spring Boot Application (CamundaApplication), this will additionaly start the camunda webapp
