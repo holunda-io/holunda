@@ -7,11 +7,12 @@ This example shows how to...
 * call the respective DMN table from a process execution (see rule task `Determine digit as word` ff.)
 
 When you start **Digit to Word Process** you will be able to enter a digit (as a number) and by means of a DMN
-table the word for this digit is determined and stored as process variable `digit_word`. Depending on different users, 
-different tenant-specific versions of the DMN table are used. Just try these users (password = username) and alo checkout their
-tenant configuration in Camunda Admin:
+table the word for this digit is determined and stored as process variable `digit_word` (just check the history ion Cockpit). 
+Depending on different users, different tenant-specific versions of the DMN table are used. Just try these users (password = username) 
+and also checkout their tenant configuration in Camunda Admin:
 
 * admin
 * james
 * klaus
 * francois
+
