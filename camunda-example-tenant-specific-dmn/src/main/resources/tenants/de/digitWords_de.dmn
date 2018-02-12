@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="definitions_0w4wi5z" name="definitions" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="digitWordDecision" name="Digit to Word">
+    <decisionTable id="decisionTable" hitPolicy="FIRST">
+      <input id="input1" label="Digit Number" camunda:inputVariable="">
+        <inputExpression id="inputExpression1" typeRef="integer">
+          <text>digit_number</text>
+        </inputExpression>
+      </input>
+      <output id="output1" label="Digit String" name="digit_string" typeRef="string" />
+      <rule id="row-770935679-2">
+        <inputEntry id="UnaryTests_1uh4j57">
+          <text>1</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_06di0at">
+          <text><![CDATA["EINS"]]></text>
+        </outputEntry>
+      </rule>
+      <rule id="row-770935679-1">
+        <inputEntry id="UnaryTests_07g5dfl">
+          <text>2</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0gll7h9">
+          <text><![CDATA["ZWEI"]]></text>
+        </outputEntry>
+      </rule>
+      <rule id="row-770935679-3">
+        <inputEntry id="UnaryTests_1sgbmdk">
+          <text>3</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1tfuo7k">
+          <text><![CDATA["DREI"]]></text>
+        </outputEntry>
+      </rule>
+      <rule id="row-770935679-4">
+        <inputEntry id="UnaryTests_1k6uphq">
+          <text>4</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1aei647">
+          <text><![CDATA["VIER"]]></text>
+        </outputEntry>
+      </rule>
+      <rule id="row-462948653-1">
+        <inputEntry id="UnaryTests_1pe3ymg">
+          <text>5</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1armgty">
+          <text><![CDATA["FÜNF"]]></text>
+        </outputEntry>
+      </rule>
+      <rule id="row-462948653-2">
+        <inputEntry id="UnaryTests_13y434k">
+          <text>6</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_09zbdmy">
+          <text><![CDATA["SECHS"]]></text>
+        </outputEntry>
+      </rule>
+      <rule id="row-462948653-3">
+        <inputEntry id="UnaryTests_05naq2v">
+          <text>7</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_17ntlf2">
+          <text><![CDATA["SIEBEN"]]></text>
+        </outputEntry>
+      </rule>
+      <rule id="row-462948653-4">
+        <inputEntry id="UnaryTests_055xdpc">
+          <text>8</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_13q1fo4">
+          <text><![CDATA["ACHT"]]></text>
+        </outputEntry>
+      </rule>
+      <rule id="row-462948653-5">
+        <inputEntry id="UnaryTests_100wjl7">
+          <text>9</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0ltltrc">
+          <text><![CDATA["NEUN"]]></text>
+        </outputEntry>
+      </rule>
+      <rule id="row-462948653-6">
+        <inputEntry id="UnaryTests_0tgaht4">
+          <text>0</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0zl9k6i">
+          <text><![CDATA["NULL"]]></text>
+        </outputEntry>
+      </rule>
+      <rule id="row-462948653-7">
+        <inputEntry id="UnaryTests_1v3gjkg">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0jmbahe">
+          <text><![CDATA["Keine Ziffer!"]]></text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

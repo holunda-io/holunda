@@ -1,0 +1,32 @@
+<process-application
+        xmlns="http://www.camunda.org/schema/1.0/ProcessApplication"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <process-archive name="All">
+        <process-engine>default</process-engine>
+        <properties>
+            <property name="isDeleteUponUndeploy">false</property>
+            <property name="isScanForProcessDefinitions">true</property>
+            <property name="resourceRootPath">tenants/all</property>
+        </properties>
+    </process-archive>
+
+    <process-archive name="German" tenantId="DE">
+        <process-engine>default</process-engine>
+        <properties>
+            <property name="isDeleteUponUndeploy">false</property>
+            <property name="isScanForProcessDefinitions">true</property>
+            <property name="resourceRootPath">tenants/de</property>
+        </properties>
+    </process-archive>
+
+    <process-archive name="French" tenantId="FR">
+        <process-engine>default</process-engine>
+        <properties>
+            <property name="isDeleteUponUndeploy">false</property>
+            <property name="isScanForProcessDefinitions">true</property>
+            <property name="resourceRootPath">tenants/fr</property>
+        </properties>
+    </process-archive>
+
+</process-application>
